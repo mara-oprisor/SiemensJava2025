@@ -92,6 +92,21 @@ public class ItemServiceTest {
     }
 
     @Test
+    void testUpdateNotExistentId() {
+        //given
+        Long id = 3L;
+        Item newItem = new Item(null, "newP", "newD", "UPDATED", "newEmail@mail.com");
+
+        //when
+        when(itemRepository.findById(id)).thenReturn(Optional.empty());
+
+        //then
+        assertThrows(IdNotExistentException.class, () -> itemService.updateItem(id, newItem));
+        verify(itemRepository, times(1)).findById(id);
+        verify(itemRepository, never()).save(any());
+    }
+
+    @Test
     void testDeleteItem() {
         //given
         Long id = 1L;
